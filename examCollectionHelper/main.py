@@ -50,8 +50,6 @@ if examSubject == '' or className == '' or not re.search(r'../../..$',examDate):
     raise UserWarning('No Subject or Class given or Wrong date format.')
 examDate = examDate.replace('/','-')
 examDateObject = datetime.strptime(examDate,'%d-%m-%y')
-dateToday = datetime.strftime(datetime.now(),'%d-%m-%y')
-dateToday =  datetime.strptime(dateToday,'%d-%m-%y')
 examSubject2 = examSubject+' Exam-{}-{}'.format(examDate,className)
 
 # checks if the data for this class,exam has been sent/exported already
