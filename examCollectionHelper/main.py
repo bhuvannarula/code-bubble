@@ -14,6 +14,9 @@ import zipfile
 '''
 Help
 
+* MAKE SURE YOU ENABLE ACCESS TO UNSECURE APPS FROM YOUR EMAIL ACCOUNT
+    (in case it shows any login error and the cred.txt is correctly filled.)
+
 * demo files are present for your help. make sure to delete/modify them to your need before running program
 
 * read docs.txt for how to run this program
@@ -38,7 +41,7 @@ except:
 # creates folder named 'student'
 if not os.path.isdir(os.getcwd()+'/student/'):
     os.mkdir(os.getcwd()+'/student/')
-# take 'Subject Name' and 'Class'
+# take 'Subject Name' and 'Class' and 'Exam Date'
 examSubject = input('Enter Subject Name: ')
 className = input('Enter Class (Demo: "XII-SA1"): ')
 examDate = input('Enter Exam Date (like dd/mm/yy): ')
@@ -51,6 +54,7 @@ dateToday = datetime.strftime(datetime.now(),'%d-%m-%y')
 dateToday =  datetime.strptime(dateToday,'%d-%m-%y')
 examSubject2 = examSubject+' Exam-{}-{}'.format(examDate,className)
 
+# checks if the data for this class,exam has been sent/exported already
 if os.path.isdir(os.getcwd()+'/archive'):
     alreadyExported = os.listdir(os.getcwd()+'/archive')
     if (examSubject2+'.zip') in alreadyExported:
@@ -63,13 +67,13 @@ if os.path.isdir(os.getcwd()+'/archive'):
 
 if not os.path.isdir(os.getcwd()+'/student/' + examSubject2):
     os.mkdir(os.getcwd()+'/student/' + examSubject2)
+
 # create folder for particular exam,date and class
 filePath1 = os.getcwd()+'/student/' + examSubject2 + '/'
 
 
 
-# this function makes a dictionary with key as student name and value as student's potential email(s)
-# this also creates a csv file with student names in which teacher can enter marks 
+# this function creates a list of names of student from the studentDetails class csv file. 
 
 def prepareStudent2():
     try:
@@ -80,22 +84,6 @@ def prepareStudent2():
     studentDetailsdict = [item55[0] for item55 in list(csvFileIn)]
     return studentDetailsdict
 studentDetailsdict = prepareStudent2()
-
-'''
-def prepareStudent():
-    try:
-        fileIn = open('studentDetails/' +  className+'.csv','r')
-    except FileNotFoundError:
-        raise UserWarning('Student Details csv file does not exist for this class!')
-    fileOut2 = open('student/' + examSubject2 + '/studentList.csv','w',newline='')
-    csvFileIn = csv.reader(fileIn)
-    csvFileOut = csv.writer(fileOut2)
-    csvFileOut.writerow(['Name of Student','Marks'])
-    for item in csvFileIn:
-        csvFileOut.writerow([item[0]])
-    fileOut2.close()
-studentDetailsdict = prepareStudent()
-'''
 
 # these 3 lines read username, password from cred.txt
 credIn = open('cred.txt','r',).read().split(',')
@@ -108,15 +96,19 @@ imap.login(username, password)
 status, messages = imap.select("INBOX")
 
 messages = int(messages[0])
+
+# function to check if student name is in class list
 def findStudentName(string):
     for item21 in studentDetailsdict:
         item22 = item21.lower().split(' ')
         if re.search('.*'.join(item22),string.lower()):
             return item21.title()
 
+# kind of deprived, was to be used when checking email id's to identify student
 def noAttachmentError(studentName):
     print("{}'s Email has no attachment!!".format(studentName))
 
+# following function decodes the mail message and gets the attachments
 def getAttachment(msg):
     for response in msg:
         if isinstance(response, tuple):
@@ -145,7 +137,9 @@ def getAttachment(msg):
                             return None
                     except:
                         None   
-print(messages,cache[0])        
+#print(messages,cache[0])    
+
+# the main loop    
 for i in range(messages, cache[0], -1):
     res, msg = imap.fetch(str(i), "(RFC822)")
     resp = getAttachment(msg)
@@ -163,6 +157,7 @@ cache[0] = messages
 pickle.dump(cache,cacheFile)
 cacheFile.flush()
 
+# following function creates a csv file for subject teacher to write marks in
 def prepareStudent():
     try:
         fileIn = open('studentDetails/' +  className+'.csv','r')
@@ -193,6 +188,7 @@ if exportZIPconditon:
 if not (input('Do you want to email files? (y/n): ').lower() in ('yes','y')):
     raise UserWarning('the program has been stopped. restart if needed.')
 
+# this inputs the email id of subject teacher
 teacherEmail = input("Enter {} Teacher Email ID: ".format(examSubject))
 while not re.search('.+@.+\..*',teacherEmail):
     print('Not a valid ')
@@ -208,6 +204,7 @@ sendmsg['To'] = teacherEmail
 zipattach = open('archive/'+examSubject2+'.zip','rb')
 sendmsg.add_attachment(zipattach.read(),maintype='application',subtype='zip',filename=(examSubject2+'.zip'))
 
+# following code sends the mail and logs out
 smtp = smtplib.SMTP_SSL('smtp.gmail.com')
 smtp.login(username,password)
 smtp.send_message(sendmsg)
