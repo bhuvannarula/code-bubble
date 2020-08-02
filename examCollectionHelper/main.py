@@ -16,7 +16,7 @@ Help
 
 * demo files are present for your help. make sure to delete/modify them to your need before running program
 
-* read docs.txt for how to run this program
+* read README.md for how to run this program
 
 *** delete following directories before running program:
 'archive/'
