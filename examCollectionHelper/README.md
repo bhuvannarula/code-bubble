@@ -33,30 +33,30 @@ Say 'Physics' exam was held today and student have sent their submissions.
 
 - If said yes, it asks for the email of subject teacher, logs in to the email account using imap, and sends email to the subject teacher with subject as 'exam name-date-class' and the zip file as attachment.
 
-### Directory of data downloaded:
+### Sample Directory of data downloaded:
 
-archive/
-	Physics-01-08-20-XII-A.zip
-	Chemistry-01-08-20-XII-A.zip
+- archive/
+	- Physics-01-08-20-XII-A.zip
+	- Chemistry-01-08-20-XII-A.zip
 
-cred.txt
+- cred.txt
 
-student/
-	Physics-01-08-20-XII-A/
-		studentList.csv
-		Student Name 1
-			(Student Name 1's submission here)
-		Student Name 2
-			(Student Name 2's submission here)
-	Chemistry-01-08-20-XII-A/
-		studentList.csv
-		Student Name 1
-			(Student Name 1's submission here)
-		Student Name 2
-			(Student Name 2's submission here)
+- student/
+	- Physics-01-08-20-XII-A/
+		- studentList.csv
+		- Student Name 1
+			- (Student Name 1's submission here)
+		- Student Name 2
+			- (Student Name 2's submission here)
+	- Chemistry-01-08-20-XII-A/
+		- studentList.csv
+		- Student Name 1
+			- (Student Name 1's submission here)
+		- Student Name 2
+			- (Student Name 2's submission here)
 
-studentDetails/
-	XII-A.csv
+- studentDetails/
+	- XII-A.csv
 
 ### Running this program:
 
