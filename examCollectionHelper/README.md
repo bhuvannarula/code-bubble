@@ -1,6 +1,12 @@
-## examCollectionHelper v1.0
+## examCollectionHelper v2.0
+
+Change-Log for v2.0:
+	- added GUI for program
+	- bug fixes
+	- minor improvements
 
 * demo files are present for your help. make sure to delete/modify them to your need before running program
+* The program might seem to freeze. It has not freezed and is doing its task. Please wait for some time.
 
 ### Origin of idea:
 Due to COVID 19, my school had decided that subjective papers have to be mailed to class teacher in form of a .pdf file with student's name in the file name.
