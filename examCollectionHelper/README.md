@@ -5,6 +5,7 @@ Change-Log for v2.0:
 - bug fixes
 - minor improvements
 
+### Note:
 * demo files are present for your help. make sure to delete/modify them to your need before running program
 * The program might seem to freeze. It has not freezed and is doing its task. Please wait for some time.
 
