@@ -132,7 +132,7 @@ def mainloop():
         return None
     examDate = examDate.replace('/','-')
     
-    if not os.path.isdir('studentDetails/'+ className + '.csv'):
+    if not os.path.isfile('studentDetails/'+ className + '.csv'):
             raiseError('Student Details csv file does not exist for this class! Please go to folder: studentDetails/ and create .csv file for this class.')
             return None      
     
