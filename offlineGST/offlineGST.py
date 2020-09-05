@@ -5,7 +5,7 @@ import os
 import re
 from functools import partial
 from shutil import rmtree
-from urllib3 import PoolManager
+from urllib import request
 import json
 import csv
 from random import randrange
@@ -34,9 +34,9 @@ def get_placeofsupply(statecode):
 def check_GSTIN(GSTIN):
     if not re.fullmatch('[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[0-9A-Z]{3}',GSTIN):
         return False
-    webopener = PoolManager()
-    response_gstin_tradename = webopener.request('GET','https://cleartax.in/f/compliance-report/{}/'.format(GSTIN)).data
-    response_gstin_tradename= json.loads(response_gstin_tradename)
+    webopener = request.urlopen('https://cleartax.in/f/compliance-report/{}/'.format(GSTIN))
+    #response_gstin_tradename = webopener.request('GET','https://cleartax.in/f/compliance-report/{}/'.format(GSTIN)).data
+    response_gstin_tradename= json.loads(webopener.read())
     response_gstin_tradename = response_gstin_tradename['taxpayerInfo']['tradeNam']
     if response_gstin_tradename == 'null':
         return False
