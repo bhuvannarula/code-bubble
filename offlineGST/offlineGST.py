@@ -17,6 +17,8 @@ csv will be used in place of openpyxl to improve compatibility and efficiency.
 
 '''
 def get_companyDirectory():
+    if not os.path.isdir('companies'):
+        os.mkdir('companies')
     companyDirectory1=list(os.listdir(os.getcwd()+'/companies/'))
     companyDirectory = list(item for item in companyDirectory1 if item[0] != '.')
     return companyDirectory
@@ -83,7 +85,7 @@ def get_current_month_summary2():
 
 def get_current_month_summary():
     global pastInvoices,invoiceNumDateDict
-    csvfileIn = open('companies/{}/{}/gstr1.csv'.format(cName,sMonth),'r')
+    csvfileIn = open('companies/{}/{}/gstr1.csv'.format(cName,sMonth),'r',newline='')
     tempReader = csv.reader(csvfileIn)
     next(tempReader,None)
     data_summary = [0,0,0,0] #Total Invoices, Total Taxbl Val, Total Tax, Total Cess
@@ -131,7 +133,7 @@ def addNewInvoice(modify=False,reset=False):
     button_5 = tk.Button(frame_16)
     if modify:
         label_13.config(text='Modify Old Invoice:')
-        csvFileIn = open('companies/{}/{}/gstr1.csv'.format(cName,sMonth),'r+')
+        csvFileIn = open('companies/{}/{}/gstr1.csv'.format(cName,sMonth),'r+',newline='')
         csvReaderData = list(csv.reader(csvFileIn))
         taxSeq = ['0','5','12','18','28']
         csvFileIn.seek(0)
@@ -297,7 +299,7 @@ def addNewInvoice(modify=False,reset=False):
         return True
     '''
     def push_data_to_excel(invNum,invDate,partyGSTIN,partyName,taxamountlists):
-        csvFileIn = open('companies/{}/{}/gstr1.csv'.format(cName,sMonth),'a+')
+        csvFileIn = open('companies/{}/{}/gstr1.csv'.format(cName,sMonth),'a+',newline='')
         csvWriter = csv.writer(csvFileIn)
         taxSeq = ['0','5','12','18','28']
         totalInvValue = sum(list((100+float(taxSeq[i[0]]))*float(i[1])/100 for i in enumerate(taxamountlists)))
@@ -390,7 +392,7 @@ def deleteInvoice(invNums):
     if confirmresp.lower() not in ('yes','y'):
         return False
     invNums=(invNums.replace(' ','')).split(',')
-    csvFileIn = open('companies/{}/{}/gstr1.csv'.format(cName,sMonth),'r+')
+    csvFileIn = open('companies/{}/{}/gstr1.csv'.format(cName,sMonth),'r+',newline='')
     csvReader = csv.reader(csvFileIn)
     csvReaderList = []
     for item in csvReader:
@@ -405,7 +407,7 @@ def deleteInvoice(invNums):
     return True
 
 def exportInvoices():
-    csvFileIn = open('companies/{}/{}/gstr1.csv'.format(cName,sMonth))
+    csvFileIn = open('companies/{}/{}/gstr1.csv'.format(cName,sMonth),newline='')
     csvFileReader = list(csv.reader(csvFileIn))
     csvFileReader = csvFileReader[1:]
     b2bdata = []
@@ -600,11 +602,12 @@ def screen2():
         else:
             frame_7.place_forget()
             action_perform(action_to_perform.get())
+    button_5 = tk.Button(frame_7,command=lambda:back_to_homescreen(frame_7),text='Go Back')
+    button_5.pack(padx=10,side='left',anchor='w')
     buttom_5pre = tk.Button(frame_7)
     buttom_5pre.config(command=lambda:initialise_addInvoice(action_to_perform),text='Proceed')
-    buttom_5pre.pack(padx=10,pady=10,side='top',anchor='w')
-    button_5 = tk.Button(frame_7,command=lambda:back_to_homescreen(frame_7),text='Go Back')
-    button_5.pack(padx=10,side='top',anchor='w')
+    buttom_5pre.pack(padx=10,side='top',anchor='w')
+
     frame_7.config(height='400', width='400')
     frame_7.place(x=0,y=0)
 
@@ -624,12 +627,12 @@ def initialiseCompany(cName,sMonth):
         tempwb1.save('companies/{}/{}/file.xlsx'.format(cName,sMonth))
     '''
     if not os.path.isfile('companies/{}/{}/gstr1.csv'.format(cName,sMonth)):
-        tempCSVFileIn = open('companies/{}/{}/gstr1.csv'.format(cName,sMonth),'w')
+        tempCSVFileIn = open('companies/{}/{}/gstr1.csv'.format(cName,sMonth),'w',newline='')
         tempWriter = csv.writer(tempCSVFileIn)
         headerRow = ['GSTIN','Receiver Name','Invoice Number','Invoice Date','Invoice Value','Place Of Supply','Invoice Type','Rate','Taxable Amount','Cess Amount']
         tempWriter.writerow(headerRow)
         tempCSVFileIn.close()
-    companyGSTIN = open('companies/{}/.COMPANY_GSTIN'.format(cName),'r').read().strip()
+    companyGSTIN = open('companies/{}/.COMPANY_GSTIN'.format(cName),'r',newline='').read().strip()
     return True
 
 def createCompDir(cName,cGSTIN):
@@ -650,7 +653,7 @@ def createCompDir(cName,cGSTIN):
         else:
             return None
     os.mkdir(os.getcwd()+'/companies/'+cName.get())
-    fileGSTIN = open(os.getcwd()+'/companies/'+cName.get()+'/.COMPANY_GSTIN','w')
+    fileGSTIN = open(os.getcwd()+'/companies/'+cName.get()+'/.COMPANY_GSTIN','w',newline='')
     fileGSTIN.write(cGSTIN)
     fileGSTIN.close()
     messagebox.showinfo('Success!','New Company successfully created!')
@@ -733,7 +736,7 @@ def screen1():
     label_5.config(font='TkDefaultFont', text=' ')
     label_5.pack(padx='180', side='top')
     button_1 = tk.Button(frame_1)
-    button_1.config(activebackground='Black', borderwidth='0', text='Continue')
+    button_1.config(text='Continue')
     button_1.pack(anchor='w', side='top')
     button_1.configure(command=partial(openMainMenu,optionVar,selectedMonth))
     button_2 = tk.Button(frame_1)
