@@ -14,8 +14,9 @@ Offline Utility for filing GSTR1
 - Program is small in size
 - Custom-made GUI crafted according to user's needs
 - Single file program to reduce complications
+- Auto-detects company name upon entering GSTIN while adding/modifying bills
 - All data stored in .csv file to enable easy access if required
-- On exporting, .JSON file is created for easy uploading on 
+- On exporting, .JSON file is created for easy uploading on the GST Portal
 - Data entered is simultaneously saved locally to prevent data loss
 - Cloud backup may be added in future on demand
 - Added Error detection and solution at every step
