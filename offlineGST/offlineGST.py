@@ -64,25 +64,6 @@ def get_max_row_count_ws(current_worksheet,check_column='C',header_present=True)
             break
     return ivar-1
 
-'''
-def get_current_month_summary2():
-    global pastInvoices,invoiceNumDateDict,current_month_wb
-    current_month_wb = openpyxl.load_workbook('companies/{}/{}/file.xlsx'.format(cName,sMonth))
-    current_month_ws = current_month_wb.active
-    data_summary = [0,0,0,0] #Total Invoices, Total Taxbl Val, Total Tax, Total Cess
-    pastInvoices = []
-    invoiceNumDateDict = {}
-    for item in range(2,get_max_row_count_ws(current_month_ws)+1):
-        pastInvoices.append(current_month_ws['C'+str(item)].value)
-        data_summary[0]+=1
-        invoiceNumDateDict[current_month_ws['C'+str(item)].value] = current_month_ws['D'+str(item)].value
-        data_summary[1]+=round(float(current_month_ws['L'+str(item)].value),2)
-        data_summary[2]+=round(float(current_month_ws['L'+str(item)].value)*float(current_month_ws['J'+str(item)].value)/100,2)
-        data_summary[3]+=round(float(current_month_ws['M'+str(item)].value or 0),2)
-    data_summary[0] = len(set(pastInvoices))
-    return data_summary
-'''
-
 def get_current_month_summary():
     global pastInvoices,invoiceNumDateDict
     csvfileIn = open('companies/{}/{}/gstr1.csv'.format(cName,sMonth),'r',newline='')
@@ -117,8 +98,6 @@ def addNewInvoice(modify=False,reset=False):
     taxable28val = tk.StringVar(value='0.00')
     #taxablecessval = tk.StringVar('0.00')
 
-        
-    
     if reset == True:
         return currInvNum.get(),currInvDate.get()
     
@@ -160,9 +139,6 @@ def addNewInvoice(modify=False,reset=False):
         csvWriter = csv.writer(csvFileIn)
         csvWriter.writerows(final_csv_before_addmodify)
         
-        
-            
-    
     label_13.pack(anchor='w', pady='10', side='top')
     frame_4 = tk.Frame(frame_3)
     label_16 = tk.Label(frame_4)
@@ -215,7 +191,6 @@ def addNewInvoice(modify=False,reset=False):
     label_23 = tk.Label(frame_3)
     label_23.config(text='Taxable Value:')
     label_23.pack(anchor='w', padx='10', side='top')
-    
     
     frame_10 = tk.Frame(frame_3)
     label_24 = tk.Label(frame_10)
@@ -276,28 +251,7 @@ def addNewInvoice(modify=False,reset=False):
     button_5.pack(anchor='w', side='left')
     def showError(message):
         messagebox.showerror('Wrong Input!',message)
-    
-    '''
-    def push_data_to_excel(invNum,invDate,partyGSTIN,partyName,taxamountlists):
-        current_month_ws = current_month_wb.active
-        newbillIndex = len(pastInvoices) + 2  # just for future, it is 2 not 1 as the first row to header
-        taxSeq = ['0','5','12','18','28']
-        for taxItem in enumerate(taxamountlists):
-            if taxItem[1] != 0:
-                current_month_ws['A'+str(newbillIndex)] = partyGSTIN.get()
-                current_month_ws['B'+str(newbillIndex)] = partyName.get()
-                current_month_ws['C'+str(newbillIndex)] = invNum.get()
-                current_month_ws['D'+str(newbillIndex)] = invDate.get()
-                current_month_ws['F'+str(newbillIndex)] = get_placeofsupply(partyGSTIN.get()[:2])
-                current_month_ws['H'+str(newbillIndex)] = 'Regular'
-                current_month_ws['J'+str(newbillIndex)] = taxSeq[taxItem[0]]
-                current_month_ws['L'+str(newbillIndex)] = taxItem[1]
-                pastInvoices.append(invNum.get())
-                invoiceNumDateDict[invNum.get()] = invDate.get()
-                newbillIndex+=1
-        current_month_wb.save('companies/{}/{}/file.xlsx'.format(cName,sMonth))
-        return True
-    '''
+
     def push_data_to_excel(invNum,invDate,partyGSTIN,partyName,taxamountlists):
         csvFileIn = open('companies/{}/{}/gstr1.csv'.format(cName,sMonth),'a+',newline='')
         csvWriter = csv.writer(csvFileIn)
@@ -368,25 +322,7 @@ def addNewInvoice(modify=False,reset=False):
     frame_3.config(height='400', takefocus=True, width='400')
     frame_3.pack(side='top')
     frame_3.place(x=0,y=0)
-'''
-def deleteInvoice(invNums):
-    confirmresp = messagebox._show('Warning!','Invoices with following Invoice Numbers will be deleted: \n{}\n Are you sure?'.format(invNums),_icon='warning',_type=messagebox.YESNO)
-    if confirmresp.lower() not in ('yes','y'):
-        return False
-    invNums=(invNums.replace(' ','')).split(',')
-    current_month_ws = current_month_wb.active
-    i = 2
-    while True:
-        if current_month_ws['C'+str(i)].value in (None,'','None'):
-            break
-        if str(current_month_ws['C'+str(i)].value) in invNums:
-            current_month_ws.delete_rows(i)
-        else:
-            i+=1
-    current_month_wb.save('companies/{}/{}/file.xlsx'.format(cName,sMonth))
-    messagebox.showinfo('Success!','Invoice(s) deleted successfully!')
-    return True
-'''
+
 def deleteInvoice(invNums):
     confirmresp = messagebox._show('Warning!','Invoices with following Invoice Numbers will be deleted: \n{}\n Are you sure?'.format(invNums),_icon='warning',_type=messagebox.YESNO)
     if confirmresp.lower() not in ('yes','y'):
@@ -621,11 +557,6 @@ def initialiseCompany(cName,sMonth):
         return False
     if not os.path.isdir(os.getcwd()+'/companies/{}/{}'.format(cName,sMonth)):
         os.mkdir(os.getcwd()+'/companies/{}/{}'.format(cName,sMonth))
-    '''
-    if not os.path.isfile(os.getcwd()+'/companies/{}/{}/file.xlsx'.format(cName,sMonth)):
-        tempwb1 = openpyxl.load_workbook('formats/b2b.xlsx')
-        tempwb1.save('companies/{}/{}/file.xlsx'.format(cName,sMonth))
-    '''
     if not os.path.isfile('companies/{}/{}/gstr1.csv'.format(cName,sMonth)):
         tempCSVFileIn = open('companies/{}/{}/gstr1.csv'.format(cName,sMonth),'w',newline='')
         tempWriter = csv.writer(tempCSVFileIn)
